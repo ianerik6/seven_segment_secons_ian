@@ -1,3 +1,5 @@
+
+
 `default_nettype none
 
 module seven_segment_seconds (
@@ -12,7 +14,7 @@ module seven_segment_seconds (
     input wire clk,
     input wire reset,
     output wire [6:0] led_out,
-      //output wire [6:0] led_oeb,
+      output wire [6:0] led_oeb,
     output wire [6:0] io_oeb
     
 

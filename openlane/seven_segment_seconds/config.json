@@ -1,9 +1,9 @@
 {
-    "DESIGN_NAME": "user_proj_example",
+    "DESIGN_NAME": "seven_segment_seconds",
     "DESIGN_IS_CORE": 0,
     "VERILOG_FILES": [
         "dir::../../verilog/rtl/defines.v",
-        "dir::../../verilog/rtl/user_proj_example.v"
+        "dir::../../verilog/rtl/seven_segment_seconds.v"
     ],
     "CLOCK_PERIOD": 25,
     "CLOCK_PORT": "wb_clk_i",
