@@ -4,21 +4,24 @@
 
 module seven_segment_seconds (
     `ifdef USE_POWER_PINS
-         output vccd1,
-         output vssd1,
+        inout wire vccd1,
+        inout wire vssd1,
+    `endif
 
-     `endif 
- 
-
-     
     input wire clk,
     input wire reset,
     output wire [6:0] led_out,
-      output wire [6:0] led_oeb,
+   // output wire [6:0] led_oeb,
     output wire [6:0] io_oeb
+);
+
+
+
+
+
     
 
-);
+
 
     assign io_oeb = 7'b0000000; // Puerto extra en el módulo
 

@@ -13,21 +13,26 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-export CARAVEL_ROOT=$(PWD)/../caravel
-##export OPENLANE_ROOT=$(PWD)/../dependencies/openlane_src
-export PDK_ROOT?=$(PWD)/../dependencies/pdks
-export PDK?=sky130A
-
-export UPRJ_ROOT=/home/ian/Escritorio/CARAVEL_TUTORIAL/caravel_user_project
-export OPEN_PDKS_COMMIT=bdc9412b3e468c102d01b7cf6337be06ec6e9c9a
-
-
-
-
-
 MAKEFLAGS+=--warn-undefined-variables
+
 export OPENLANE_RUN_TAG = $(shell date '+%y_%m_%d_%H_%M')
 OPENLANE_TAG ?= 2023.07.19-1
+#OPENLANE_TAG ?= 30ee1388932eb55a89ad84ee43997bfe3a386421-amd64                  
+
+
+#export PDK_ROOT?=$(PWD)/../dependencies/pdks
+export PDK?=sky130A
+export UPRJ_ROOT?=$(PWD)/..
+#export CARAVEL_ROOT?=$(PWD)/..
+export OPEN_PDKS_COMMIT?=78b7bc32ddb4b6f14f76883c2e2dc5b5de9d1cbc
+export OPENLANE_ROOT?=$(PWD)/../dependencies/openlane_src
+#export OPENLANE_ROOT=/home/ian/OpenLane
+
+export OPENLANE_ROOT=/home/ian/OpenLane
+export PDK_ROOT=/home/ian/Escritorio/CARAVEL_TUTORIAL/caravel_user_project/dependencies/pdks
+export CARAVEL_ROOT=/home/ian/Escritorio/CARAVEL_TUTORIAL/caravel_user_project/caravel
+
+
 OPENLANE_IMAGE_NAME ?= efabless/openlane:$(OPENLANE_TAG)
 designs = $(shell find * -maxdepth 0 -type d)
 current_design = null
@@ -49,9 +54,9 @@ openlane_cmd = \
 openlane_cmd_interactive = "flow.tcl -it -file $$(realpath ./$*/interactive.tcl)"
 
 docker_mounts = \
-	-v $$(realpath $(PWD)/..):$$(realpath $(PWD)/..) \
 	-v $(PDK_ROOT):$(PDK_ROOT) \
 	-v $(CARAVEL_ROOT):$(CARAVEL_ROOT) \
+	-v $(HOME)/.ipm:$(HOME)/.ipm \
 	-v $(OPENLANE_ROOT):/openlane
 
 docker_env = \
@@ -72,13 +77,14 @@ docker_run = \
 	$(USER_ARGS) \
 	$(docker_mounts) \
 	$(docker_env) \
+	
 
 list:
 	@echo $(designs)
 
 .PHONY: $(designs)
 $(designs) : export current_design=$@
-$(designs) : % : ./%/config.json
+$(designs) : % : ./%/config.json enable-openlane-pdk
 ifneq (,$(wildcard ./$(current_design)/interactive.tcl))
 	$(docker_run) \
 		$(OPENLANE_IMAGE_NAME) sh -c $(openlane_cmd_interactive)
@@ -95,6 +101,10 @@ endif
 	@cp ./$*/runs/$*/PDK_SOURCES ../signoff/$*/
 	@cp ./$*/runs/$*/reports/*.csv ../signoff/$*/
 
+.PHONY: enable-openlane-pdk
+enable-openlane-pdk:
+	$(UPRJ_ROOT)/venv/bin/volare enable $(OPEN_PDKS_COMMIT)
+
 .PHONY: openlane
 openlane: check-openlane-env
 	if [ -d "$(OPENLANE_ROOT)" ]; then\
@@ -104,7 +114,7 @@ openlane: check-openlane-env
 	git clone https://github.com/The-OpenROAD-Project/OpenLane -b $(OPENLANE_TAG) --depth=1 $(OPENLANE_ROOT) && \
 		cd $(OPENLANE_ROOT) && \
 		export OPENLANE_IMAGE_NAME=efabless/openlane:$(OPENLANE_TAG) && \
-		$(OPENLANE_TAG) && \
+		export IMAGE_NAME=efabless/openlane:$(OPENLANE_TAG) && \
 		$(MAKE) pull-openlane
 
 .PHONY: check-openlane-env

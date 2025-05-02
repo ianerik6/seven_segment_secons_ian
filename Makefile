@@ -13,6 +13,18 @@
 # limitations under the License.
 #
 # SPDX-License-Identifier: Apache-2.0
+
+export CARAVEL_ROOT=$(PWD)/../caravel
+export OPENLANE_ROOT=$(PWD)/../dependencies/openlane_src
+export PDK_ROOT?=$(PWD)/../dependencies/pdks
+export PDK?=sky130A
+
+export UPRJ_ROOT=/home/ian/Escritorio/CARAVEL_TUTORIAL/caravel_user_project
+export OPEN_PDKS_COMMIT=bdc9412b3e468c102d01b7cf6337be06ec6e9c9a
+
+
+
+
 MAKEFLAGS+=--warn-undefined-variables
 
 export CARAVEL_ROOT?=$(PWD)/caravel
